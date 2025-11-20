@@ -827,6 +827,16 @@
             }
         }
         
+        function resetEntryButton() {
+            const payBtn = document.getElementById('payEntryBtn');
+            if (payBtn) {
+                payBtn.disabled = false;
+                payBtn.innerHTML = '💸 PAY 1 SGB & CHOOSE VEHICLE';
+                payBtn.style.opacity = '1';
+                payBtn.style.cursor = 'pointer';
+            }
+        }
+        
         async function selectVehicle() {
             username = document.getElementById('username').value.trim().toUpperCase();
             if (!username) {
@@ -1625,6 +1635,7 @@
                         totalKills = 0;
                         document.getElementById('gameArea').style.display = 'none';
                         document.getElementById('gameSetup').style.display = 'block';
+                        resetEntryButton(); // Reset button state
                         switchTab('play');
                     }
                 }, 2000);
@@ -1646,12 +1657,14 @@
                             totalKills = 0;
                             document.getElementById('gameArea').style.display = 'none';
                             document.getElementById('gameSetup').style.display = 'block';
+                            resetEntryButton(); // Reset button state
                         } else {
                             lives = 5;
                             document.getElementById('livesCount').textContent = lives;
                             totalKills = 0;
                             document.getElementById('gameArea').style.display = 'none';
                             document.getElementById('gameSetup').style.display = 'block';
+                            resetEntryButton(); // Reset button state
                             switchTab('play');
                         }
                     }, 1000);
