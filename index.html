@@ -457,11 +457,11 @@
         
         <!-- POOL TAB -->
         <div id="poolTab" class="tab-content">
-            <h2 style="color: #10b981; margin-bottom: 20px; text-align: center;">💧 BAKE/WSGB Liquidity Pool</h2>
+            <h2 style="color: #10b981; margin-bottom: 20px; text-align: center;">💧 BAKE/SGB Liquidity Pool</h2>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
                 <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; text-align: center;">
-                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">WSGB Reserves</div>
+                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">SGB Reserves</div>
                     <div style="font-size: 36px; font-weight: bold; color: #10b981;" id="poolWsgb">0</div>
                 </div>
                 <div style="background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; text-align: center;">
@@ -472,7 +472,7 @@
             
             <div style="background: rgba(251, 191, 36, 0.1); padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
                 <div style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">BAKE Price</div>
-                <div style="font-size: 32px; font-weight: bold; color: #fbbf24; margin-bottom: 8px;"><span id="bakePrice">0.000000</span> WSGB</div>
+                <div style="font-size: 32px; font-weight: bold; color: #fbbf24; margin-bottom: 8px;"><span id="bakePrice">0.000000</span> SGB</div>
                 <div style="font-size: 20px; font-weight: bold; color: #22c55e; margin-bottom: 12px;">Market Cap: $<span id="marketCap">0</span></div>
                 <div style="font-size: 16px; font-weight: bold;" id="allTimeChange">All-Time: +0.00%</div>
             </div>
@@ -482,7 +482,7 @@
                 <h3 style="color: #10b981; margin-bottom: 15px; text-align: center;">💧 Add Liquidity</h3>
                 
                 <div style="margin-bottom: 15px;">
-                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">WSGB Amount</div>
+                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">SGB Amount</div>
                     <input type="number" id="wsgbInput" placeholder="0.0" style="width: 100%; background: #1e293b; border: 2px solid #334155; color: white; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center; margin-top: 10px;">
                 </div>
                 
@@ -808,7 +808,7 @@
                     // Update marketcap in wallet banner
                     document.getElementById('marketcapBanner').textContent = '$' + marketCap.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
                     
-                    // Calculate all-time % change (starting from $100 market cap = 0.000003112356 WSGB initial price)
+                    // Calculate all-time % change (starting from $100 market cap = 0.000003112356 SGB initial price)
                     const initialPrice = 0.000003112356;
                     const priceChange = ((price - initialPrice) / initialPrice) * 100;
                     const changeEl = document.getElementById('allTimeChange');
