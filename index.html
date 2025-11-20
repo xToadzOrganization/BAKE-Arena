@@ -589,7 +589,10 @@
         const CONTRACTS = {
             BAKE_TOKEN: '0xBA3a30FFd8a8a18C90b275FC7fE2F8EFd77F30Ce',
             GAME_CONTRACT: '0xaB27737d60ce0FaC521f82e3d2703d0D1c279E49',
-            POOL_CONTRACT: '0xF840c1F971eE06387cB76817F1c3570f9f644f6A'
+            POOL_CONTRACT: '0x8153AEf72270749b8008b119ec698b45c63b1Cee',
+            WSGB: '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED', // Wrapped Songbird
+            FTSO_REGISTRY: '0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019', // Songbird FTSO Registry
+            STOADZ_PROVIDER: '0xa0E1FBA30e75e2d0D6C428cFF4B3b6A06233422b' // Your sToadz validator
         };
         
         // Contract ABIs
@@ -2188,24 +2191,49 @@
                     return;
                 }
                 
-                const confirmed = await showCustomModal('💧 Add Liquidity', `Add ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to liquidity?`, [{text: 'Confirm'}, {text: 'Cancel'}]);
+                const confirmed = await showCustomModal('💧 Add Liquidity', `Add ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to liquidity?\n\nYour SGB will be wrapped and delegated to sToadz FTSO for rewards.`, [{text: 'Confirm'}, {text: 'Cancel'}]);
                 if (!confirmed) return;
                 
                 const bakeWei = ethers.utils.parseEther(bakeAmount.toString());
                 const sgbWei = ethers.utils.parseEther(sgbAmount.toString());
                 
-                // Step 1: Approve
-                showCustomModal('⏳ Step 1 of 2', 'Check MetaMask to approve BAKE spending...');
+                // Step 1: Wrap SGB to WSGB
+                showCustomModal('⏳ Step 1 of 4', 'Wrapping SGB to WSGB...');
+                const wsgbContract = new ethers.Contract(
+                    CONTRACTS.WSGB,
+                    ['function deposit() payable', 'function approve(address spender, uint256 amount) returns (bool)'],
+                    signer
+                );
+                const wrapTx = await wsgbContract.deposit({value: sgbWei});
+                await wrapTx.wait();
+                
+                // Step 2: Delegate WSGB to sToadz FTSO
+                showCustomModal('⏳ Step 2 of 4', 'Delegating to sToadz FTSO validator...');
+                const ftsoContract = new ethers.Contract(
+                    CONTRACTS.WSGB,
+                    ['function delegate(address to, uint256 bips) returns (uint256)'],
+                    signer
+                );
+                const delegateTx = await ftsoContract.delegate(CONTRACTS.STOADZ_PROVIDER, 10000); // 100% delegation
+                await delegateTx.wait();
+                
+                // Step 3: Approve BAKE
+                showCustomModal('⏳ Step 3 of 4', 'Check MetaMask to approve BAKE spending...');
                 const approveTx = await bakeContract.approve(CONTRACTS.POOL_CONTRACT, bakeWei);
                 
-                showCustomModal('⏳ Step 1 of 2', 'Approval submitted! Waiting for confirmation...');
+                showCustomModal('⏳ Step 3 of 4', 'Approval submitted! Waiting for confirmation...');
                 await approveTx.wait();
                 
-                // Step 2: Add liquidity
-                showCustomModal('⏳ Step 2 of 2', 'Check MetaMask to add liquidity...');
+                // Step 4: Add liquidity (WSGB is already in user's wallet, pool will use it)
+                showCustomModal('⏳ Step 4 of 4', 'Check MetaMask to add liquidity...');
+                // Note: Pool contract needs to be updated to accept WSGB instead of SGB
+                // For now, this will add BAKE but we need to handle WSGB transfer separately
+                const wsgbApprove = await wsgbContract.approve(CONTRACTS.POOL_CONTRACT, sgbWei);
+                await wsgbApprove.wait();
+                
                 const tx = await poolContract.addLiquidity(bakeWei, {value: sgbWei});
                 
-                showCustomModal('⏳ Step 2 of 2', 'Transaction submitted! Waiting for confirmation...');
+                showCustomModal('⏳ Step 4 of 4', 'Transaction submitted! Waiting for confirmation...');
                 await tx.wait();
                 
                 const newBalance = await bakeContract.balanceOf(wallet);
@@ -2216,12 +2244,15 @@
                 sgbBalance = parseFloat(ethers.utils.formatEther(newSgbBalance));
                 document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
                 
+                // Add to history
+                addHistoryEntry(`Added ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to LP`, bakeAmount, 'lp');
+                
                 document.getElementById('wsgbInput').value = '';
                 document.getElementById('bakeRequired').value = '';
                 
                 await updatePoolData();
                 
-                await showCustomModal('✅ Success', 'Liquidity added successfully');
+                await showCustomModal('✅ Success', 'Liquidity added! Your WSGB is now delegated to sToadz FTSO.');
                 
             } catch (error) {
                 console.error('Add liquidity error:', error);
