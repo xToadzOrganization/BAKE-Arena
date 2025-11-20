@@ -1169,10 +1169,10 @@
                         player.tacticalCooldowns[slot] = 450;
                         alert('💣 EMP! Watch enemies move SLOW!');
                     } else if (tactical === 'turret') {
-                        // Deploy visible turret
+                        // Deploy visible turret away from player
                         const turret = {
-                            x: player.x + 50,
-                            y: player.y,
+                            x: player.x + 80,  // Spawn further away so it's visible
+                            y: player.y - 80,
                             active: true,
                             cooldown: 0
                         };
@@ -1218,7 +1218,7 @@
                         }, 10000);
                         
                         player.tacticalCooldowns[slot] = 600;
-                        alert('🔫 TURRET DEPLOYED! Watch it shoot!');
+                        alert('🔫 TURRET DEPLOYED! Look for RED SQUARE with gun!');
                     } else if (tactical === 'decoy') {
                         // Create fake player that enemies target
                         const decoy = {
@@ -1675,18 +1675,18 @@
             activeTurrets.forEach(turret => {
                 if (!turret.active) return;
                 
-                // Draw red square turret
+                // Draw BIG red square turret (50x50)
                 ctx.fillStyle = '#ef4444';
-                ctx.fillRect(turret.x - 15, turret.y - 15, 30, 30);
+                ctx.fillRect(turret.x - 25, turret.y - 25, 50, 50);
                 
-                // Draw border
+                // Draw thick yellow border
                 ctx.strokeStyle = '#fbbf24';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(turret.x - 15, turret.y - 15, 30, 30);
+                ctx.lineWidth = 4;
+                ctx.strokeRect(turret.x - 25, turret.y - 25, 50, 50);
                 
-                // Draw gun icon
+                // Draw gun icon BIGGER
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 20px Arial';
+                ctx.font = 'bold 32px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('🔫', turret.x, turret.y);
