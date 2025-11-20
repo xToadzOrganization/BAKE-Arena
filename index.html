@@ -495,9 +495,117 @@
                 <div style="font-size: 16px; font-weight: bold;" id="allTimeChange">All-Time: +0.00%</div>
             </div>
             
+            <!-- LP Dashboard Section -->
+            <div id="lpDashboard" style="background: rgba(139, 92, 246, 0.1); border: 2px solid #8b5cf6; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: none;">
+                <h3 style="color: #8b5cf6; margin-bottom: 15px; text-align: center;">📊 Your LP Position</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 12px; color: #94a3b8;">Your Pool Share</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #8b5cf6;" id="lpPoolPercent">0%</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 12px; color: #94a3b8;">Your Multiplier</div>
+                        <div style="font-size: 24px; font-weight: bold; color: #fbbf24;" id="lpMultiplier">1x</div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 12px; color: #94a3b8;">SGB Deposited</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #10b981;" id="lpSgbDeposited">0</div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 12px; color: #94a3b8;">BAKE Deposited</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #fbbf24;" id="lpBakeDeposited">0</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; color: #94a3b8;">Lock Status</div>
+                    <div style="font-size: 16px; font-weight: bold; color: #f59e0b;" id="lpLockStatus">-</div>
+                </div>
+                
+                <!-- Rewards Section -->
+                <div style="background: rgba(16, 185, 129, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-size: 14px; color: #10b981; font-weight: bold; margin-bottom: 10px; text-align: center;">🎁 Your Rewards</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 11px; color: #94a3b8;">BAKE (Claim Now)</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #fbbf24;" id="lpPendingBake">0</div>
+                            <button onclick="claimBAKE()" style="background: #fbbf24; color: black; border: none; padding: 5px 15px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 5px;">Claim BAKE</button>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 11px; color: #94a3b8;">SGB (Claimable)</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #10b981;" id="lpClaimableSgb">0</div>
+                            <button onclick="claimSGB()" style="background: #10b981; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 5px;">Claim SGB</button>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 6px;">
+                        <div style="font-size: 11px; color: #94a3b8;">SGB Pending (Next Claim)</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #64748b;" id="lpPendingSgb">0</div>
+                        <div style="font-size: 11px; color: #f59e0b;" id="lpSgbCountdown">-</div>
+                    </div>
+                </div>
+                
+                <!-- Next % Threshold -->
+                <div style="background: rgba(59, 130, 246, 0.2); padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; color: #3b82f6;">Add <span id="lpSgbNeeded" style="font-weight: bold;">0</span> SGB to reach <span id="lpNextPercent" style="font-weight: bold;">1%</span> pool share</div>
+                </div>
+                
+                <!-- Unlock/Relock buttons -->
+                <div id="lpUnlockSection" style="display: none; text-align: center;">
+                    <div style="font-size: 14px; color: #10b981; margin-bottom: 10px;">🔓 Lock expired! Choose an option:</div>
+                    <button onclick="relockPosition(0)" style="background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; margin: 3px;">Relock 30d (1x)</button>
+                    <button onclick="relockPosition(1)" style="background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; margin: 3px;">Relock 90d (1.5x)</button>
+                    <button onclick="relockPosition(2)" style="background: #8b5cf6; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; margin: 3px;">Relock 180d (2.5x)</button>
+                    <button onclick="removeLiquidity()" style="background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; margin: 3px;">Withdraw All</button>
+                </div>
+            </div>
+            
             <!-- Add Liquidity Section -->
-            <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <div id="addLiquiditySection" style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                 <h3 style="color: #10b981; margin-bottom: 15px; text-align: center;">💧 Add Liquidity</h3>
+                
+                <!-- Reward Boost Explainer -->
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #94a3b8;">
+                    <div style="font-weight: bold; color: white; margin-bottom: 8px;">📈 Your Reward Boost</div>
+                    <div style="margin-bottom: 5px;">Lock longer, earn more:</div>
+                    <div style="margin-left: 10px; margin-bottom: 8px;">
+                        • 30 days = 1x rewards<br>
+                        • 90 days = 1.5x rewards<br>
+                        • 180 days = 2.5x rewards
+                    </div>
+                    <div style="margin-bottom: 5px;">Own Toadz NFTs? Get up to +1x bonus!</div>
+                    <div style="font-size: 11px; color: #64748b;">(0.001x per NFT you hold, max +1x)</div>
+                    <div style="margin-top: 10px; text-align: center;">
+                        <a href="https://toadz.gg" target="_blank" style="color: #10b981; text-decoration: none; font-weight: bold;">Need more NFTs? Visit → Toadz.gg</a>
+                    </div>
+                </div>
+                
+                <!-- Current APY -->
+                <div style="background: rgba(251, 191, 36, 0.2); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; color: #94a3b8;">Current APY</div>
+                    <div style="font-size: 28px; font-weight: bold; color: #fbbf24;" id="poolAPY">~6%</div>
+                    <div style="font-size: 10px; color: #64748b;">Based on recent activity, subject to change</div>
+                </div>
+                
+                <!-- Your NFT Bonus Preview -->
+                <div style="background: rgba(139, 92, 246, 0.2); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; color: #94a3b8;">Your NFT Bonus</div>
+                    <div style="font-size: 20px; font-weight: bold; color: #8b5cf6;" id="userNftBonus">+0x</div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">Lock Period</div>
+                    <select id="lockTierSelect" style="width: 100%; background: #1e293b; border: 2px solid #334155; color: white; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold;">
+                        <option value="0">30 Days (1x rewards)</option>
+                        <option value="1">90 Days (1.5x rewards)</option>
+                        <option value="2" selected>180 Days (2.5x rewards)</option>
+                    </select>
+                </div>
                 
                 <div style="margin-bottom: 15px;">
                     <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">SGB Amount</div>
@@ -505,8 +613,8 @@
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">BAKE Required</div>
-                    <input type="number" id="bakeRequired" placeholder="0.0" readonly style="width: 100%; background: #1e293b; border: 2px solid #334155; color: white; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center; margin-top: 10px;">
+                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">BAKE Amount</div>
+                    <input type="number" id="bakeRequired" placeholder="0.0" style="width: 100%; background: #1e293b; border: 2px solid #334155; color: white; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center; margin-top: 10px;">
                 </div>
                 
                 <button onclick="addLiquidity()" style="background: linear-gradient(135deg, #10b981, #059669); border: none; padding: 15px 40px; border-radius: 8px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;">💧 ADD LIQUIDITY</button>
@@ -589,7 +697,7 @@
         const CONTRACTS = {
             BAKE_TOKEN: '0xBA3a30FFd8a8a18C90b275FC7fE2F8EFd77F30Ce',
             GAME_CONTRACT: '0xaB27737d60ce0FaC521f82e3d2703d0D1c279E49',
-            POOL_CONTRACT: '0x788f2590747deEF8796056885cc97ea732508ba5',
+            POOL_CONTRACT: '0x0dAD958fb5cB58EcB6A92696E92B6c79B519d031',
             WSGB: '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED', // Wrapped Songbird
             FTSO_REGISTRY: '0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019', // Songbird FTSO Registry
             STOADZ_PROVIDER: '0xa0E1FBA30e75e2d0D6C428cFF4B3b6A06233422b' // Your sToadz validator
@@ -604,12 +712,23 @@
         ];
         
         const POOL_ABI = [
-            "function swapSGBForBAKE() payable returns (uint256)",
-            "function swapBAKEForSGB(uint256 bakeAmount) returns (uint256)",
-            "function addLiquidity(uint256 bakeAmount) payable",
-            "function getBAKEPrice() view returns (uint256)",
-            "function wsgbReserves() view returns (uint256)",
-            "function bakeReserves() view returns (uint256)"
+            "function swapSGBforBAKE() payable returns (uint256)",
+            "function swapBAKEforSGB(uint256 bakeAmount) returns (uint256)",
+            "function addLiquidity(uint256 bakeAmount, uint256 lockTier) payable returns (uint256)",
+            "function removeLiquidity() external",
+            "function relock(uint256 newTier) external",
+            "function claimBAKE() external",
+            "function claimSGB() external",
+            "function getPrice() view returns (uint256)",
+            "function reserveWSGB() view returns (uint256)",
+            "function reserveBAKE() view returns (uint256)",
+            "function reserveC2FLR() view returns (uint256)",
+            "function reserveOOPS() view returns (uint256)",
+            "function getLPInfo(address user) view returns (uint256 sgbDeposited, uint256 bakeDeposited, uint256 weightedShares, uint256 poolPercent, uint256 lockTier, uint256 lockExpires, uint256 multiplier, uint256 pendingBAKE, uint256 pendingSGB, uint256 claimableSGB, uint256 timeUntilSGBClaim)",
+            "function getNextPercentThreshold(address user) view returns (uint256 currentPercent, uint256 nextPercent, uint256 sgbNeeded)",
+            "function getPoolStats() view returns (uint256 totalSGB, uint256 totalBAKE, uint256 tvlUSD, uint256 totalLPs, uint256 currentAPY)",
+            "function getNFTBonus(address user) view returns (uint256)",
+            "function getTotalMultiplier(address user, uint256 tier) view returns (uint256)"
         ];
         
         // GAME STATE
@@ -796,12 +915,25 @@
                 ];
                 
                 const POOL_ABI = [
+                    "function swapSGBforBAKE() payable returns (uint256)",
+                    "function swapBAKEforSGB(uint256 bakeAmount) returns (uint256)",
                     "function swapC2FLRforOOPS() payable returns (uint256)",
-                    "function addLiquidity(uint256 oopsAmount) payable",
                     "function swapOOPSforC2FLR(uint256 oopsAmount) returns (uint256)",
+                    "function addLiquidity(uint256 bakeAmount, uint256 lockTier) payable returns (uint256)",
+                    "function removeLiquidity() external",
+                    "function relock(uint256 newTier) external",
+                    "function claimBAKE() external",
+                    "function claimSGB() external",
                     "function reserveC2FLR() view returns (uint256)",
                     "function reserveOOPS() view returns (uint256)",
-                    "function getPrice() view returns (uint256)"
+                    "function reserveWSGB() view returns (uint256)",
+                    "function reserveBAKE() view returns (uint256)",
+                    "function getPrice() view returns (uint256)",
+                    "function getLPInfo(address user) view returns (uint256 sgbDeposited, uint256 bakeDeposited, uint256 weightedShares, uint256 poolPercent, uint256 lockTier, uint256 lockExpires, uint256 multiplier, uint256 pendingBAKE, uint256 pendingSGB, uint256 claimableSGB, uint256 timeUntilSGBClaim)",
+                    "function getNextPercentThreshold(address user) view returns (uint256 currentPercent, uint256 nextPercent, uint256 sgbNeeded)",
+                    "function getPoolStats() view returns (uint256 totalSGB, uint256 totalBAKE, uint256 tvlUSD, uint256 totalLPs, uint256 currentAPY)",
+                    "function getNFTBonus(address user) view returns (uint256)",
+                    "function getTotalMultiplier(address user, uint256 tier) view returns (uint256)"
                 ];
                 
                 bakeContract = new ethers.Contract(CONTRACTS.BAKE_TOKEN, BAKE_ABI, signer);
@@ -843,6 +975,7 @@
                 
                 // Load pool data
                 await updatePoolData();
+                await updateLPDashboard();
                 
             } catch (error) {
                 console.error("Connection error:", error);
@@ -2180,6 +2313,7 @@
             try {
                 const sgbAmount = parseFloat(document.getElementById('wsgbInput').value) || 0;
                 const bakeAmount = parseFloat(document.getElementById('bakeRequired').value) || 0;
+                const lockTier = parseInt(document.getElementById('lockTierSelect').value);
                 
                 if (sgbAmount <= 0 || bakeAmount <= 0) {
                     await showCustomModal('⚠️ Invalid Amount', 'Please enter valid amounts');
@@ -2191,49 +2325,25 @@
                     return;
                 }
                 
-                const confirmed = await showCustomModal('💧 Add Liquidity', `Add ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to liquidity?\n\nYour SGB will be wrapped and delegated to sToadz FTSO for rewards.`, [{text: 'Confirm'}, {text: 'Cancel'}]);
+                const lockDays = lockTier === 0 ? 30 : lockTier === 1 ? 90 : 180;
+                const multiplier = lockTier === 0 ? '1x' : lockTier === 1 ? '1.5x' : '2.5x';
+                
+                const confirmed = await showCustomModal('💧 Add Liquidity', `Add ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE?\n\nLock Period: ${lockDays} days (${multiplier} rewards)\n\nYour SGB will be wrapped and delegated to sToadz FTSO.`, [{text: 'Confirm'}, {text: 'Cancel'}]);
                 if (!confirmed) return;
                 
                 const bakeWei = ethers.utils.parseEther(bakeAmount.toString());
                 const sgbWei = ethers.utils.parseEther(sgbAmount.toString());
                 
-                // Step 1: Wrap SGB to WSGB
-                showCustomModal('⏳ Step 1 of 4', 'Wrapping SGB to WSGB...');
-                const wsgbContract = new ethers.Contract(
-                    CONTRACTS.WSGB,
-                    ['function deposit() payable', 'function approve(address spender, uint256 amount) returns (bool)'],
-                    signer
-                );
-                const wrapTx = await wsgbContract.deposit({value: sgbWei});
-                await wrapTx.wait();
-                
-                // Step 2: Delegate WSGB to sToadz FTSO
-                showCustomModal('⏳ Step 2 of 4', 'Delegating to sToadz FTSO validator...');
-                const ftsoContract = new ethers.Contract(
-                    CONTRACTS.WSGB,
-                    ['function delegate(address to, uint256 bips) returns (uint256)'],
-                    signer
-                );
-                const delegateTx = await ftsoContract.delegate(CONTRACTS.STOADZ_PROVIDER, 10000); // 100% delegation
-                await delegateTx.wait();
-                
-                // Step 3: Approve BAKE
-                showCustomModal('⏳ Step 3 of 4', 'Check MetaMask to approve BAKE spending...');
+                // Step 1: Approve BAKE
+                showCustomModal('⏳ Step 1 of 2', 'Check MetaMask to approve BAKE spending...');
                 const approveTx = await bakeContract.approve(CONTRACTS.POOL_CONTRACT, bakeWei);
-                
-                showCustomModal('⏳ Step 3 of 4', 'Approval submitted! Waiting for confirmation...');
                 await approveTx.wait();
                 
-                // Step 4: Add liquidity (WSGB is already in user's wallet, pool will use it)
-                showCustomModal('⏳ Step 4 of 4', 'Check MetaMask to add liquidity...');
-                // Note: Pool contract needs to be updated to accept WSGB instead of SGB
-                // For now, this will add BAKE but we need to handle WSGB transfer separately
-                const wsgbApprove = await wsgbContract.approve(CONTRACTS.POOL_CONTRACT, sgbWei);
-                await wsgbApprove.wait();
+                // Step 2: Add liquidity (contract handles wrapping and delegation)
+                showCustomModal('⏳ Step 2 of 2', 'Check MetaMask to add liquidity...');
+                const tx = await poolContract.addLiquidity(bakeWei, lockTier, {value: sgbWei});
                 
-                const tx = await poolContract.addLiquidity(bakeWei, {value: sgbWei});
-                
-                showCustomModal('⏳ Step 4 of 4', 'Transaction submitted! Waiting for confirmation...');
+                showCustomModal('⏳ Step 2 of 2', 'Transaction submitted! Waiting for confirmation...');
                 await tx.wait();
                 
                 const newBalance = await bakeContract.balanceOf(wallet);
@@ -2245,18 +2355,186 @@
                 document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
                 
                 // Add to history
-                addHistoryEntry(`Added ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to LP`, bakeAmount, 'lp');
+                addHistoryEntry(`Added ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to LP (${lockDays}d lock)`, bakeAmount, 'lp');
                 
                 document.getElementById('wsgbInput').value = '';
                 document.getElementById('bakeRequired').value = '';
                 
                 await updatePoolData();
+                await updateLPDashboard();
                 
-                await showCustomModal('✅ Success', 'Liquidity added! Your WSGB is now delegated to sToadz FTSO.');
+                await showCustomModal('✅ Success', `Liquidity added with ${lockDays}-day lock!\n\nYour SGB is now earning FTSO rewards.`);
                 
             } catch (error) {
                 console.error('Add liquidity error:', error);
                 await showCustomModal('❌ Transaction Failed', error.message);
+            }
+        }
+        
+        async function updateLPDashboard() {
+            if (!wallet || !poolContract) return;
+            
+            try {
+                const lpInfo = await poolContract.getLPInfo(wallet);
+                
+                const sgbDeposited = parseFloat(ethers.utils.formatEther(lpInfo.sgbDeposited));
+                const bakeDeposited = parseFloat(ethers.utils.formatEther(lpInfo.bakeDeposited));
+                const poolPercent = lpInfo.poolPercent.toNumber() / 100; // Convert basis points to %
+                const multiplier = lpInfo.multiplier.toNumber() / 1000; // Convert from 1000 scale
+                const pendingBAKE = parseFloat(ethers.utils.formatEther(lpInfo.pendingBAKE));
+                const pendingSGB = parseFloat(ethers.utils.formatEther(lpInfo.pendingSGB));
+                const claimableSGB = parseFloat(ethers.utils.formatEther(lpInfo.claimableSGB));
+                const timeUntilClaim = lpInfo.timeUntilSGBClaim.toNumber();
+                const lockExpires = lpInfo.lockExpires.toNumber();
+                
+                // Show dashboard if user has a position
+                if (sgbDeposited > 0) {
+                    document.getElementById('lpDashboard').style.display = 'block';
+                    document.getElementById('addLiquiditySection').style.display = 'none';
+                    
+                    document.getElementById('lpPoolPercent').textContent = poolPercent.toFixed(2) + '%';
+                    document.getElementById('lpMultiplier').textContent = multiplier.toFixed(1) + 'x';
+                    document.getElementById('lpSgbDeposited').textContent = sgbDeposited.toFixed(2);
+                    document.getElementById('lpBakeDeposited').textContent = Math.floor(bakeDeposited).toLocaleString();
+                    document.getElementById('lpPendingBake').textContent = Math.floor(pendingBAKE).toLocaleString();
+                    document.getElementById('lpPendingSgb').textContent = pendingSGB.toFixed(4);
+                    document.getElementById('lpClaimableSgb').textContent = claimableSGB.toFixed(4);
+                    
+                    // Lock status
+                    const now = Math.floor(Date.now() / 1000);
+                    if (lockExpires > now) {
+                        const daysLeft = Math.ceil((lockExpires - now) / 86400);
+                        document.getElementById('lpLockStatus').textContent = `Locked (${daysLeft} days remaining)`;
+                        document.getElementById('lpLockStatus').style.color = '#f59e0b';
+                        document.getElementById('lpUnlockSection').style.display = 'none';
+                    } else {
+                        document.getElementById('lpLockStatus').textContent = 'Unlocked';
+                        document.getElementById('lpLockStatus').style.color = '#10b981';
+                        document.getElementById('lpUnlockSection').style.display = 'block';
+                    }
+                    
+                    // SGB claim countdown
+                    if (timeUntilClaim > 0) {
+                        const days = Math.floor(timeUntilClaim / 86400);
+                        const hours = Math.floor((timeUntilClaim % 86400) / 3600);
+                        document.getElementById('lpSgbCountdown').textContent = `Claimable in ${days}d ${hours}h`;
+                    } else {
+                        document.getElementById('lpSgbCountdown').textContent = 'Ready to claim!';
+                    }
+                    
+                    // Next % threshold
+                    const thresholdInfo = await poolContract.getNextPercentThreshold(wallet);
+                    const sgbNeeded = parseFloat(ethers.utils.formatEther(thresholdInfo.sgbNeeded));
+                    const nextPercent = thresholdInfo.nextPercent.toNumber() / 100;
+                    document.getElementById('lpSgbNeeded').textContent = sgbNeeded.toFixed(2);
+                    document.getElementById('lpNextPercent').textContent = nextPercent.toFixed(0) + '%';
+                    
+                } else {
+                    document.getElementById('lpDashboard').style.display = 'none';
+                    document.getElementById('addLiquiditySection').style.display = 'block';
+                    
+                    // Show NFT bonus preview
+                    const nftBonus = await poolContract.getNFTBonus(wallet);
+                    const bonusPercent = nftBonus.toNumber() / 1000;
+                    document.getElementById('userNftBonus').textContent = '+' + bonusPercent.toFixed(2) + 'x';
+                }
+                
+            } catch (error) {
+                console.error('Error updating LP dashboard:', error);
+            }
+        }
+        
+        async function claimBAKE() {
+            if (!wallet) return;
+            
+            try {
+                showCustomModal('⏳ Claiming', 'Check MetaMask to claim BAKE...');
+                const tx = await poolContract.claimBAKE();
+                await tx.wait();
+                
+                await updateLPDashboard();
+                
+                const newBalance = await bakeContract.balanceOf(wallet);
+                balance = parseFloat(ethers.utils.formatEther(newBalance));
+                document.getElementById('walletBalBanner').textContent = Math.floor(balance).toLocaleString();
+                
+                await showCustomModal('✅ Success', 'BAKE rewards claimed!');
+            } catch (error) {
+                console.error('Claim BAKE error:', error);
+                await showCustomModal('❌ Failed', error.message);
+            }
+        }
+        
+        async function claimSGB() {
+            if (!wallet) return;
+            
+            try {
+                showCustomModal('⏳ Claiming', 'Check MetaMask to claim SGB...');
+                const tx = await poolContract.claimSGB();
+                await tx.wait();
+                
+                await updateLPDashboard();
+                
+                const newSgbBalance = await provider.getBalance(wallet);
+                sgbBalance = parseFloat(ethers.utils.formatEther(newSgbBalance));
+                document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
+                
+                await showCustomModal('✅ Success', 'SGB rewards claimed!');
+            } catch (error) {
+                console.error('Claim SGB error:', error);
+                await showCustomModal('❌ Failed', error.message);
+            }
+        }
+        
+        async function relockPosition(newTier) {
+            if (!wallet) return;
+            
+            const lockDays = newTier === 0 ? 30 : newTier === 1 ? 90 : 180;
+            const multiplier = newTier === 0 ? '1x' : newTier === 1 ? '1.5x' : '2.5x';
+            
+            try {
+                const confirmed = await showCustomModal('🔒 Relock Position', `Relock for ${lockDays} days with ${multiplier} rewards?`, [{text: 'Confirm'}, {text: 'Cancel'}]);
+                if (!confirmed) return;
+                
+                showCustomModal('⏳ Relocking', 'Check MetaMask to confirm...');
+                const tx = await poolContract.relock(newTier);
+                await tx.wait();
+                
+                await updateLPDashboard();
+                
+                await showCustomModal('✅ Success', `Position relocked for ${lockDays} days!`);
+            } catch (error) {
+                console.error('Relock error:', error);
+                await showCustomModal('❌ Failed', error.message);
+            }
+        }
+        
+        async function removeLiquidity() {
+            if (!wallet) return;
+            
+            try {
+                const confirmed = await showCustomModal('⚠️ Withdraw All', 'Withdraw all your liquidity?\n\nYou will receive your SGB + BAKE back.', [{text: 'Withdraw'}, {text: 'Cancel'}]);
+                if (!confirmed) return;
+                
+                showCustomModal('⏳ Withdrawing', 'Check MetaMask to confirm...');
+                const tx = await poolContract.removeLiquidity();
+                await tx.wait();
+                
+                await updateLPDashboard();
+                await updatePoolData();
+                
+                const newBalance = await bakeContract.balanceOf(wallet);
+                balance = parseFloat(ethers.utils.formatEther(newBalance));
+                document.getElementById('walletBalBanner').textContent = Math.floor(balance).toLocaleString();
+                
+                const newSgbBalance = await provider.getBalance(wallet);
+                sgbBalance = parseFloat(ethers.utils.formatEther(newSgbBalance));
+                document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
+                
+                await showCustomModal('✅ Success', 'Liquidity withdrawn!');
+            } catch (error) {
+                console.error('Remove liquidity error:', error);
+                await showCustomModal('❌ Failed', error.message);
             }
         }
         
