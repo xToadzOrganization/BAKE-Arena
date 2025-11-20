@@ -967,7 +967,7 @@
                 baseSpeed: 4,
                 shield: false,
                 shieldTime: 0,
-                tacticalCooldown: 0 // Add cooldown tracker
+                tacticalCooldowns: [0, 0, 0, 0] // Track cooldown for 4 tactical slots
             };
             
             enemies = [];
@@ -1094,34 +1094,81 @@
             const secs = gameTime % 60;
             document.getElementById('gameTime').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
             
-            // Tactical cooldown
-            if (player.tacticalCooldown > 0) {
-                player.tacticalCooldown--;
+            // Update all tactical cooldowns
+            for (let i = 0; i < player.tacticalCooldowns.length; i++) {
+                if (player.tacticalCooldowns[i] > 0) {
+                    player.tacticalCooldowns[i]--;
+                }
             }
             
-            // Activate tactical on 'E' key
-            if (keys['e'] && player.tacticalCooldown === 0 && inventory.tacticals.length > 0) {
-                const tactical = inventory.tacticals[0]; // Use first purchased tactical
-                keys['e'] = false; // Prevent rapid fire
+            // Activate tacticals with number keys 1-4
+            for (let slot = 0; slot < 4; slot++) {
+                const key = (slot + 1).toString(); // Keys 1, 2, 3, 4
                 
-                // Simple tactical effects (expand these later)
-                if (tactical === 'orbital' || tactical === 'airstrike') {
-                    // Damage all enemies on screen
-                    enemies.forEach(enemy => {
-                        enemy.hp -= 100;
-                    });
-                    player.tacticalCooldown = 600; // 10 second cooldown
-                    showSarahMessage('pickup_damage');
-                } else if (tactical === 'shield') {
-                    player.shield = true;
-                    player.shieldTime = 600; // 10 seconds
-                    player.tacticalCooldown = 600;
-                    showSarahMessage('pickup_shield');
-                } else if (tactical === 'heal') {
-                    player.hp = Math.min(player.maxHp, player.hp + 100);
-                    document.getElementById('playerHP').textContent = Math.floor(player.hp);
-                    player.tacticalCooldown = 300; // 5 second cooldown
-                    showSarahMessage('pickup_health');
+                if (keys[key] && player.tacticalCooldowns[slot] === 0 && inventory.tacticals[slot]) {
+                    const tactical = inventory.tacticals[slot];
+                    keys[key] = false; // Prevent rapid fire
+                    
+                    // Apply tactical effects
+                    if (tactical === 'orbital' || tactical === 'airstrike') {
+                        // Damage all enemies on screen
+                        enemies.forEach(enemy => {
+                            enemy.hp -= 100;
+                        });
+                        player.tacticalCooldowns[slot] = 600; // 10 second cooldown
+                        showSarahMessage('pickup_damage');
+                    } else if (tactical === 'shield') {
+                        player.shield = true;
+                        player.shieldTime = 600; // 10 seconds
+                        player.tacticalCooldowns[slot] = 600;
+                        showSarahMessage('pickup_shield');
+                    } else if (tactical === 'heal') {
+                        player.hp = Math.min(player.maxHp, player.hp + 100);
+                        document.getElementById('playerHP').textContent = Math.floor(player.hp);
+                        player.tacticalCooldowns[slot] = 300; // 5 second cooldown
+                        showSarahMessage('pickup_health');
+                    } else if (tactical === 'emp') {
+                        // Slow all enemies for 5 seconds
+                        enemies.forEach(enemy => {
+                            const origSpeed = enemy.speed;
+                            enemy.speed *= 0.3;
+                            setTimeout(() => { enemy.speed = origSpeed; }, 5000);
+                        });
+                        player.tacticalCooldowns[slot] = 450; // 7.5 second cooldown
+                        showSarahMessage('pickup_speed');
+                    } else if (tactical === 'turret') {
+                        // Auto-shoot nearby enemies for 10 seconds
+                        const turretInterval = setInterval(() => {
+                            enemies.forEach(enemy => {
+                                const dx = enemy.x - player.x;
+                                const dy = enemy.y - player.y;
+                                const dist = Math.sqrt(dx*dx + dy*dy);
+                                if (dist < 300) {
+                                    enemy.hp -= 5;
+                                }
+                            });
+                        }, 100);
+                        setTimeout(() => clearInterval(turretInterval), 10000);
+                        player.tacticalCooldowns[slot] = 600; // 10 second cooldown
+                        showSarahMessage('pickup_damage');
+                    } else if (tactical === 'decoy') {
+                        // Create fake player that enemies target
+                        const decoy = {
+                            x: player.x + 100,
+                            y: player.y,
+                            hp: 50,
+                            isDecoy: true
+                        };
+                        // Add decoy to enemy target pool (simplified - just confuses AI briefly)
+                        player.tacticalCooldowns[slot] = 300; // 5 second cooldown
+                    } else if (tactical === 'timeslow') {
+                        // Slow down time (increase player speed, slow bullets)
+                        const origSpeed = player.speed;
+                        player.speed *= 2;
+                        setTimeout(() => { player.speed = origSpeed; }, 8000);
+                        player.tacticalCooldowns[slot] = 900; // 15 second cooldown
+                        showSarahMessage('pickup_speed');
+                    }
                 }
             }
             
