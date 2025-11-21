@@ -110,7 +110,7 @@
         <div id="playTab" class="tab-content active">
             <div style="text-align: center; margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                 <button id="walletBtn" class="wallet-btn" onclick="connectWallet()">🔗 Connect Wallet</button>
-                <button id="networkBtn" class="wallet-btn" onclick="addSongbirdNetwork()" style="background: linear-gradient(135deg, #f97316, #ea580c);">🌐 Add Songbird Network</button>
+                <button id="networkBtn" class="wallet-btn" onclick="addSongbirdNetwork()" style="background: linear-gradient(135deg, #f97316, #ea580c); display: none;">🌐 Add Songbird Network</button>
                 <button id="importTokenBtn" class="wallet-btn" onclick="importBAKEToken()" style="background: linear-gradient(135deg, #10b981, #059669); display: none;">➕ Add $BAKE to Metamask</button>
             </div>
             
@@ -190,7 +190,7 @@
         <!-- BUY BAKE TAB -->
         <div id="buyTab" class="tab-content">
             <h2 style="color: #fbbf24; margin-bottom: 20px; text-align: center;">💰 Bulk BAKE Packages</h2>
-            <p style="text-align: center; color: #94a3b8; margin-bottom: 20px;">Save 10% vs swap. BAKE vests over 60 days. For believers, not flippers.</p>
+            <p style="text-align: center; color: #94a3b8; margin-bottom: 20px;">OTC deals for believers. BAKE vests over 60 days. Bigger package = bigger discount.</p>
             
             <div id="buyWalletWarning" style="background: rgba(239,68,68,0.2); border: 2px solid #ef4444; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
                 <div style="color: white; font-size: 18px; font-weight: bold; margin-bottom: 10px;">⚠️ CONNECT WALLET TO PURCHASE</div>
@@ -198,25 +198,64 @@
             </div>
             
             <div id="bulkPurchaseSection" style="display: none;">
-                <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                    <h3 style="color: #10b981; margin-bottom: 15px; text-align: center;">📦 Buy Bulk BAKE (10% Discount)</h3>
-                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; color: #94a3b8;">
-                        <strong style="color: white;">How it works:</strong><br>
-                        • Min purchase: 10 SGB<br>
-                        • Get 10% more BAKE than regular swap<br>
-                        • BAKE vests linearly over 60 days<br>
-                        • Claim vested BAKE anytime
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #94a3b8;">
+                    <strong style="color: white;">How it works:</strong><br>
+                    • Buy at discount vs swap price<br>
+                    • BAKE vests linearly over 60 days<br>
+                    • Claim vested BAKE anytime<br>
+                    • SGB gets wrapped & delegated to sToadz FTSO
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                    <!-- $500 Package -->
+                    <div style="background: linear-gradient(135deg, #1e293b, #334155); border: 2px solid #334155; padding: 25px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">STARTER</div>
+                        <div style="font-size: 36px; font-weight: bold; color: #fbbf24; margin-bottom: 5px;">$500</div>
+                        <div style="font-size: 14px; color: #22c55e; margin-bottom: 15px;">2% Discount</div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You pay</div>
+                            <div style="font-size: 20px; font-weight: bold; color: white;" id="pkg500Sgb">~250,000 SGB</div>
+                        </div>
+                        <div style="background: rgba(251, 191, 36, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You receive (+2%)</div>
+                            <div style="font-size: 20px; font-weight: bold; color: #fbbf24;" id="pkg500Bake">Loading...</div>
+                        </div>
+                        <button onclick="buyPackage(500, 2)" style="background: linear-gradient(135deg, #3b82f6, #2563eb); border: none; padding: 12px 30px; border-radius: 8px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%;">BUY $500 PACKAGE</button>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">SGB Amount (min 10)</div>
-                        <input type="number" id="bulkSgbInput" placeholder="10" min="10" style="width: 100%; background: #1e293b; border: 2px solid #334155; color: white; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; text-align: center;">
+                    
+                    <!-- $1000 Package -->
+                    <div style="background: linear-gradient(135deg, #1e293b, #334155); border: 2px solid #fbbf24; padding: 25px; border-radius: 12px; text-align: center; position: relative;">
+                        <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: black; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">POPULAR</div>
+                        <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">BUILDER</div>
+                        <div style="font-size: 36px; font-weight: bold; color: #fbbf24; margin-bottom: 5px;">$1,000</div>
+                        <div style="font-size: 14px; color: #22c55e; margin-bottom: 15px;">5% Discount</div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You pay</div>
+                            <div style="font-size: 20px; font-weight: bold; color: white;" id="pkg1000Sgb">~500,000 SGB</div>
+                        </div>
+                        <div style="background: rgba(251, 191, 36, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You receive (+5%)</div>
+                            <div style="font-size: 20px; font-weight: bold; color: #fbbf24;" id="pkg1000Bake">Loading...</div>
+                        </div>
+                        <button onclick="buyPackage(1000, 5)" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; padding: 12px 30px; border-radius: 8px; color: black; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%;">BUY $1,000 PACKAGE</button>
                     </div>
-                    <div style="background: rgba(251, 191, 36, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-                        <div style="font-size: 12px; color: #94a3b8;">You'll receive (with 10% bonus)</div>
-                        <div style="font-size: 28px; font-weight: bold; color: #fbbf24;" id="bulkBakeEstimate">0 BAKE</div>
-                        <div style="font-size: 11px; color: #22c55e;" id="bulkSavings">Save 0 BAKE vs swap</div>
+                    
+                    <!-- $5000 Package -->
+                    <div style="background: linear-gradient(135deg, #1e293b, #334155); border: 2px solid #8b5cf6; padding: 25px; border-radius: 12px; text-align: center; position: relative;">
+                        <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #8b5cf6; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">WHALE</div>
+                        <div style="font-size: 14px; color: #94a3b8; margin-bottom: 5px;">BELIEVER</div>
+                        <div style="font-size: 36px; font-weight: bold; color: #fbbf24; margin-bottom: 5px;">$5,000</div>
+                        <div style="font-size: 14px; color: #22c55e; margin-bottom: 15px;">10% Discount</div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You pay</div>
+                            <div style="font-size: 20px; font-weight: bold; color: white;" id="pkg5000Sgb">~2,500,000 SGB</div>
+                        </div>
+                        <div style="background: rgba(251, 191, 36, 0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; color: #94a3b8;">You receive (+10%)</div>
+                            <div style="font-size: 20px; font-weight: bold; color: #fbbf24;" id="pkg5000Bake">Loading...</div>
+                        </div>
+                        <button onclick="buyPackage(5000, 10)" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); border: none; padding: 12px 30px; border-radius: 8px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%;">BUY $5,000 PACKAGE</button>
                     </div>
-                    <button onclick="buyBulkBAKE()" style="background: linear-gradient(135deg, #10b981, #059669); border: none; padding: 15px 40px; border-radius: 8px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%;">💰 BUY BULK BAKE</button>
                 </div>
                 
                 <div id="vestStatus" style="background: rgba(139, 92, 246, 0.1); border: 2px solid #8b5cf6; padding: 20px; border-radius: 12px; display: none;">
@@ -424,7 +463,7 @@
         const CONTRACTS = {
             BAKE_TOKEN: '0xBA3a30FFd8a8a18C90b275FC7fE2F8EFd77F30Ce',
             GAME_CONTRACT: '0xaB27737d60ce0FaC521f82e3d2703d0D1c279E49',
-            POOL_CONTRACT: '0x44dec5Ba2116cdBd062E3b184A3853bc9539C961',
+            POOL_CONTRACT: '0xAa2D4a6A2821E39CBCa695358DAeDDb4137316C3',
             WSGB: '0x02f0826ef6aD107Cfc861152B32B52fD11BaB9ED',
             FTSO_REGISTRY: '0xaD67FE66660Fb8dFE9d6b1b4240d8650e30F6019',
             STOADZ_PROVIDER: '0xa0E1FBA30e75e2d0D6C428cFF4B3b6A06233422b'
@@ -441,6 +480,7 @@
             "function swapSGBforBAKE() payable returns (uint256)",
             "function swapBAKEforSGB(uint256 bakeAmount) returns (uint256)",
             "function addLiquidity(uint256 bakeAmount, uint256 lockTier) payable returns (uint256)",
+            "function addMore(uint256 bakeAmount) payable",
             "function removeLiquidity() external",
             "function relock(uint256 newTier) external",
             "function claimBAKE() external",
@@ -603,6 +643,7 @@
                 sgbBalance = parseFloat(ethers.utils.formatEther(sgbBalanceWei));
                 if (walletBtn) { walletBtn.textContent = '✓ Connected'; walletBtn.className = 'wallet-btn wallet-connected'; walletBtn.onclick = null; walletBtn.disabled = false; walletBtn.style.opacity = '1'; }
                 document.getElementById('importTokenBtn').style.display = 'inline-block';
+                document.getElementById('networkBtn').style.display = 'inline-block';
                 document.getElementById('lpBanner').style.display = 'none';
                 document.getElementById('walletBanner').style.display = 'block';
                 document.getElementById('walletAddrBanner').textContent = wallet.substr(0, 6) + '...' + wallet.substr(-4);
@@ -615,6 +656,7 @@
                 await updatePoolData();
                 await updateLPDashboard();
                 await updateBulkVestStatus();
+                await updatePackagePrices();
             } catch (error) {
                 showCustomModal('❌ Connection Failed', error.message);
                 if (walletBtn && originalText) { walletBtn.disabled = false; walletBtn.innerHTML = originalText; walletBtn.style.opacity = '1'; }
@@ -672,6 +714,63 @@
             } catch (error) { console.error('Error updating vest status:', error); }
         }
         
+        async function buyPackage(usdAmount, discountPercent) {
+            if (!wallet) { await showCustomModal('⚠️ Wallet Required', 'Connect wallet first'); return; }
+            
+            // SGB price ~$0.002, so $500 = 250,000 SGB, $1000 = 500,000 SGB, $5000 = 2,500,000 SGB
+            const sgbPrice = 0.002;
+            const sgbAmount = Math.floor(usdAmount / sgbPrice);
+            
+            if (sgbBalance < sgbAmount) {
+                await showCustomModal('⚠️ Insufficient SGB', `You need ~${sgbAmount.toLocaleString()} SGB ($${usdAmount})\nYou have: ${Math.floor(sgbBalance).toLocaleString()} SGB`);
+                return;
+            }
+            
+            try {
+                const confirmed = await showCustomModal(`💰 Buy $${usdAmount.toLocaleString()} Package`, `Pay ~${sgbAmount.toLocaleString()} SGB\n\n• ${discountPercent}% bonus vs regular swap\n• BAKE vests over 60 days\n• Claim anytime as it vests`, [{text: 'Buy'}, {text: 'Cancel'}]);
+                if (!confirmed) return;
+                
+                const sgbWei = ethers.utils.parseEther(sgbAmount.toString());
+                showCustomModal('⏳ Opening MetaMask', 'Check your MetaMask popup to confirm!');
+                const tx = await poolContract.buyBulkBAKE({value: sgbWei});
+                showCustomModal('⏳ Processing', 'Transaction submitted! Waiting for confirmation...');
+                await tx.wait();
+                
+                const newSgbBalance = await provider.getBalance(wallet);
+                sgbBalance = parseFloat(ethers.utils.formatEther(newSgbBalance));
+                document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
+                
+                await updatePoolData();
+                await updateBulkVestStatus();
+                await updatePackagePrices();
+                
+                await showCustomModal('✅ Purchase Complete', `Your $${usdAmount.toLocaleString()} BAKE package is now vesting!\n\nCheck back to claim as it unlocks.`);
+            } catch (error) { await showCustomModal('❌ Transaction Failed', error.message); }
+        }
+        
+        async function updatePackagePrices() {
+            if (!poolContract) return;
+            try {
+                const sgbPrice = 0.002; // $0.002 per SGB
+                const packages = [
+                    { usd: 500, discount: 2, sgbEl: 'pkg500Sgb', bakeEl: 'pkg500Bake' },
+                    { usd: 1000, discount: 5, sgbEl: 'pkg1000Sgb', bakeEl: 'pkg1000Bake' },
+                    { usd: 5000, discount: 10, sgbEl: 'pkg5000Sgb', bakeEl: 'pkg5000Bake' }
+                ];
+                
+                for (const pkg of packages) {
+                    const sgbAmount = Math.floor(pkg.usd / sgbPrice);
+                    const sgbWei = ethers.utils.parseEther(sgbAmount.toString());
+                    const normalBakeOut = await poolContract.getBAKEOut(sgbWei);
+                    const normalBake = parseFloat(ethers.utils.formatEther(normalBakeOut));
+                    const bonusBake = normalBake * (1 + pkg.discount / 100);
+                    
+                    document.getElementById(pkg.sgbEl).textContent = sgbAmount.toLocaleString() + ' SGB';
+                    document.getElementById(pkg.bakeEl).textContent = Math.floor(bonusBake).toLocaleString() + ' BAKE';
+                }
+            } catch (error) { console.error('Error updating package prices:', error); }
+        }
+        
         async function buyBulkBAKE() {
             if (!wallet) { await showCustomModal('⚠️ Wallet Required', 'Connect wallet first'); return; }
             const sgbAmount = parseFloat(document.getElementById('bulkSgbInput').value) || 0;
@@ -725,7 +824,10 @@
                 const lockExpires = lpInfo.lockExpires.toNumber();
                 if (sgbDeposited > 0) {
                     document.getElementById('lpDashboard').style.display = 'block';
-                    document.getElementById('addLiquiditySection').style.display = 'none';
+                    document.getElementById('addLiquiditySection').style.display = 'block';
+                    document.getElementById('addLiquiditySection').querySelector('h3').textContent = '➕ Add More Liquidity';
+                    document.getElementById('addLiquiditySection').querySelector('button').textContent = '➕ ADD MORE';
+                    document.getElementById('addLiquiditySection').querySelector('button').setAttribute('onclick', 'addMoreLiquidity()');
                     document.getElementById('lpPoolPercent').textContent = poolPercent.toFixed(2) + '%';
                     document.getElementById('lpMultiplier').textContent = multiplier.toFixed(1) + 'x';
                     document.getElementById('lpSgbDeposited').textContent = sgbDeposited.toFixed(2);
@@ -750,6 +852,9 @@
                 } else {
                     document.getElementById('lpDashboard').style.display = 'none';
                     document.getElementById('addLiquiditySection').style.display = 'block';
+                    document.getElementById('addLiquiditySection').querySelector('h3').textContent = '💧 Add Liquidity';
+                    document.getElementById('addLiquiditySection').querySelector('button').textContent = '💧 ADD LIQUIDITY';
+                    document.getElementById('addLiquiditySection').querySelector('button').setAttribute('onclick', 'addLiquidity()');
                     const nftBonus = await poolContract.getNFTBonus(wallet);
                     document.getElementById('userNftBonus').textContent = '+' + (nftBonus.toNumber() / 1000).toFixed(2) + 'x';
                 }
@@ -852,6 +957,49 @@
                 await updatePoolData();
                 await updateLPDashboard();
                 await showCustomModal('✅ Success', `Liquidity added with ${lockDays}-day lock!`);
+            } catch (error) { await showCustomModal('❌ Transaction Failed', error.message); }
+        }
+        
+        async function addMoreLiquidity() {
+            if (!wallet) { await showCustomModal('⚠️ Wallet Required', 'Connect wallet first'); return; }
+            try {
+                const sgbAmount = parseFloat(document.getElementById('wsgbInput').value) || 0;
+                const bakeAmount = parseFloat(document.getElementById('bakeRequired').value) || 0;
+                
+                if (sgbAmount <= 0 || bakeAmount <= 0) { await showCustomModal('⚠️ Invalid Amount', 'Please enter valid amounts'); return; }
+                if (balance < bakeAmount) { await showCustomModal('⚠️ Insufficient BAKE', `You need ${bakeAmount.toLocaleString()} BAKE`); return; }
+                
+                const confirmed = await showCustomModal('➕ Add More Liquidity', `Add ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to your existing position?\n\nUses your existing lock tier & multiplier.`, [{text: 'Confirm'}, {text: 'Cancel'}]);
+                if (!confirmed) return;
+                
+                const bakeWei = ethers.utils.parseEther(bakeAmount.toString());
+                const sgbWei = ethers.utils.parseEther(sgbAmount.toString());
+                
+                showCustomModal('⏳ Step 1 of 2', 'Check MetaMask to approve BAKE spending...');
+                const approveTx = await bakeContract.approve(CONTRACTS.POOL_CONTRACT, bakeWei);
+                await approveTx.wait();
+                
+                showCustomModal('⏳ Step 2 of 2', 'Check MetaMask to add more liquidity...');
+                const tx = await poolContract.addMore(bakeWei, {value: sgbWei});
+                showCustomModal('⏳ Step 2 of 2', 'Transaction submitted! Waiting for confirmation...');
+                await tx.wait();
+                
+                const newBalance = await bakeContract.balanceOf(wallet);
+                balance = parseFloat(ethers.utils.formatEther(newBalance));
+                document.getElementById('walletBalBanner').textContent = Math.floor(balance).toLocaleString();
+                
+                const newSgbBalance = await provider.getBalance(wallet);
+                sgbBalance = parseFloat(ethers.utils.formatEther(newSgbBalance));
+                document.getElementById('walletSGBBanner').textContent = sgbBalance.toFixed(2);
+                
+                addHistoryEntry(`Added ${sgbAmount} SGB + ${bakeAmount.toFixed(0)} BAKE to LP`, bakeAmount, 'lp');
+                document.getElementById('wsgbInput').value = '';
+                document.getElementById('bakeRequired').value = '';
+                
+                await updatePoolData();
+                await updateLPDashboard();
+                
+                await showCustomModal('✅ Success', 'Liquidity added to your position!');
             } catch (error) { await showCustomModal('❌ Transaction Failed', error.message); }
         }
         
